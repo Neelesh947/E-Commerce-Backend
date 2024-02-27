@@ -23,5 +23,7 @@ public class ProductDto {
 	
 	private String categroyId;
 	
+	private String categroyName;
+	
 	private MultipartFile img;
 }
