@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Entity.Order;
+import com.example.demo.Entity.OrderStatus;
 import com.example.demo.Entity.User;
 import com.example.demo.Entity.UserRole;
+import com.example.demo.Repository.OrderRepository;
 import com.example.demo.Repository.UserRepository;
 import com.example.demo.Service.UserService;
 
@@ -17,6 +20,9 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 
 	public List<User> getAllUsers() {
 		return this.userRepository.findAll();
@@ -26,6 +32,7 @@ public class UserServiceImpl implements UserService{
 		return this.userRepository.findById(id).orElse(null);
 	}
 	
+	//create users	
 	public User createUsers(User user) throws Exception {
 		
 		
@@ -48,6 +55,16 @@ public class UserServiceImpl implements UserService{
 			String str2=user.getLastname();
 			String str3= str1+" "+str2;
 			user.setFullname(str3);
+			
+			Order order=new Order();
+			String orderuuid=UUID.randomUUID().toString();
+			order.setOrderId(orderuuid);
+			order.setAmount(0L);
+			order.setTotalAmount(0L);
+			order.setDiscount(0L);
+			order.setUser(user);
+			order.setOrderStatus(OrderStatus.PENDING);
+			orderRepository.save(order);
 			
 			existUser=this.userRepository.save(user);
 		}		

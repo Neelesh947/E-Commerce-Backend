@@ -2,6 +2,7 @@ package com.example.demo.ServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,10 +46,27 @@ public class ProductServiceImpl implements ProductService{
 	}
 	
 	//get all products
-	
 	public List<ProductDto> getAllProducts(){
 		List<Product> products=this.productRepository.findAll();
 		return products.stream().map(Product::getDto).collect(Collectors.toList());
+	}
+	
+	//get the products by name
+	public List<ProductDto> getProductsByName(String name){
+		List<Product> products=this.productRepository.findAllByNameContaining(name);
+		return products.stream().map(Product::getDto).collect(Collectors.toList());
+	}
+	
+	//delete the products
+	public boolean deleteProducts(String id)
+	{
+		Optional<Product> products=this.productRepository.findById(id);
+		if(products.isPresent())
+		{
+			this.productRepository.deleteById(id);
+			return true;
+		}
+		return false;
 	}
 	
 }
