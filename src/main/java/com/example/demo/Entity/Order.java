@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.example.demo.Dto.OrderDto;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
@@ -41,7 +42,30 @@ public class Order {
 	@JoinColumn(name="user_id",referencedColumnName = "id")
 	private User user;
 	
+	@OneToOne(cascade = CascadeType.MERGE)
+	@JoinColumn(name="coupon_id",referencedColumnName = "id")
+	private Coupon coupon;
+	
 	@JsonManagedReference
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
 	private List<CartItem> cartItems;
+	
+	public OrderDto getOrderDto() {
+		OrderDto orderDto=new OrderDto();
+		
+		orderDto.setOrderId(orderId);
+		orderDto.setOrderDescription(orderDescription);
+		orderDto.setAddress(address);
+		orderDto.setTrackingId(trackingId);
+		orderDto.setAmount(amount);
+		orderDto.setDate(date);
+		orderDto.setOrderStatus(orderStatus);
+		orderDto.setUserName(user.getUsername());
+		
+		if(coupon !=null)
+		{
+			orderDto.setCouponName(coupon.getName());
+		}
+		return orderDto;
+	}
 }

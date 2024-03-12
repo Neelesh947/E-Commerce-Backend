@@ -1,5 +1,7 @@
 package com.example.demo.Controller;
 
+import javax.xml.bind.ValidationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,5 +47,18 @@ public class CartController {
 	 {
 		 OrderDto orderDto=this.cartService.getCartItemsByUserId(userId);
 		 return ResponseEntity.status(HttpStatus.OK).body(orderDto);
+	 }
+	 
+	 //apply coupons
+	 @GetMapping("/coupon/{userId}/{code}")
+	 public ResponseEntity<?> applyCouponCode(@PathVariable String userId, @PathVariable String code)
+	 {
+		 try {
+			 OrderDto orderDto=cartService.applyCoupon(userId, code);
+			 return ResponseEntity.ok(orderDto);
+		 }catch(ValidationException ex)
+		 {
+			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+		 }
 	 }
 }

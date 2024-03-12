@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class CouponDto {
 
-	private String couponId;
+	private Long id;
 	
 	private String name;
 	

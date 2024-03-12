@@ -1,7 +1,6 @@
 package com.example.demo.ServiceImpl;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.xml.bind.ValidationException;
 
@@ -28,8 +27,6 @@ public class CouponServiceImpl implements CouponService{
 		{
 			throw new ValidationException("coupon code already exists");
 		}
-		String uuid=UUID.randomUUID().toString();
-		coupon.setCouponId(uuid);
 		return couponRepository.save(coupon);
 	}
 	
