@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.Dto.AddProductInCartDto;
 import com.example.demo.Dto.CartItemsDto;
 import com.example.demo.Dto.OrderDto;
+import com.example.demo.Dto.PlaceOrderDto;
 import com.example.demo.Entity.CartItem;
 import com.example.demo.Entity.Coupon;
 import com.example.demo.Entity.Order;
@@ -178,4 +179,82 @@ public class CartServiceImpl implements CartService{
 		return null;
 			
 	}
+	
+	// decrease the quantity in the cart
+		public OrderDto decreaseOrderQuantity(AddProductInCartDto addProductInCartDto)
+		{
+			Order activeOrder=this.orderRepository.findByUserIdAndOrderStatus(addProductInCartDto.getUserId(),OrderStatus.PENDING);
+			
+			Optional<Product> optionalProduct=this.productRepository.findById(addProductInCartDto.getProductId());
+			
+			Optional<CartItem> optionalCartItems=this.cartItemRepository.findByProduct_ProductIdAndOrder_OrderIdAndUser_Id
+					(addProductInCartDto.getProductId(), activeOrder.getOrderId(), addProductInCartDto.getUserId());
+			
+			if(optionalProduct.isPresent() && optionalCartItems.isPresent())
+			{
+				CartItem cartItem=optionalCartItems.get();
+				Product product=optionalProduct.get();
+				
+				activeOrder.setAmount(activeOrder.getAmount() - product.getPrice());
+				activeOrder.setTotalAmount(activeOrder.getTotalAmount() - product.getPrice());
+				
+				cartItem.setQuantity(cartItem.getQuantity() - 1);
+				
+				if(activeOrder.getCoupon()!=null)
+				{
+					double discountAmount=((activeOrder.getCoupon().getDiscount()/100.0)* activeOrder.getTotalAmount());
+					double netAmount=activeOrder.getTotalAmount()-discountAmount;
+					
+					activeOrder.setAmount((long)netAmount);
+					activeOrder.setDiscount((long)discountAmount);
+				}
+				cartItemRepository.save(cartItem);
+				orderRepository.save(activeOrder);
+				
+				return activeOrder.getOrderDto();
+			}		
+			return null;
+				
+		}
+		
+		//place order
+		public OrderDto placeOrderDto(PlaceOrderDto placeOrderDto)
+		{
+			Order activeOrder=this.orderRepository.findByUserIdAndOrderStatus(placeOrderDto.getUserId(),OrderStatus.PENDING);
+			
+			Optional<User> optionalUser=this.userRepository.findById(placeOrderDto.getUserId());
+			
+			if(optionalUser.isPresent())
+			{
+				activeOrder.setOrderDescription(placeOrderDto.getOrderDescription());
+				activeOrder.setAddress(placeOrderDto.getAddress());
+				activeOrder.setDate(new Date());
+				activeOrder.setOrderStatus(OrderStatus.PLACED);
+				activeOrder.setTrackingId(UUID.randomUUID());
+				
+				orderRepository.save(activeOrder);
+				
+				Order order=new Order();
+				String orderuuid=UUID.randomUUID().toString();
+				order.setOrderId(orderuuid);
+				order.setAmount(0L);
+				order.setTotalAmount(0L);
+				order.setDiscount(0L);
+				order.setUser(optionalUser.get());
+				order.setOrderStatus(OrderStatus.PENDING);
+				orderRepository.save(order);
+				
+				return activeOrder.getOrderDto();
+			}			
+			return null;
+		}
+		
+		
+
+		//get the order for the customer/ user
+		public List<OrderDto> getMyPlacedOrder(String userId)
+		{
+			return orderRepository.findByUserIdAndOrderStatusIn(userId, List.of(OrderStatus.PLACED,OrderStatus.SHIPPED,OrderStatus.DELIVERED))
+								.stream().map(Order::getOrderDto).collect(Collectors.toList());
+		}
 }

@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Dto.FAQdto;
 import com.example.demo.Dto.ProductDto;
+import com.example.demo.Service.FAQService;
 import com.example.demo.Service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,9 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private FAQService faqService;
 	
 	//create products
 	@PostMapping("/")
@@ -64,4 +70,11 @@ public class ProductController {
 		}
 		return ResponseEntity.notFound().build();
 	}
+	
+	@PostMapping("/FAQ/{productId}")
+	public ResponseEntity<FAQdto> postFAQ(@PathVariable String productId, @RequestBody FAQdto faQdto)
+	{
+		return ResponseEntity.status(HttpStatus.CREATED).body(faqService.postFAQ(productId, faQdto));
+	}
+	
 }

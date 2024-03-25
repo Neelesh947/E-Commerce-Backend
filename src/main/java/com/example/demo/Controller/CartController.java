@@ -1,5 +1,7 @@
 package com.example.demo.Controller;
 
+import java.util.List;
+
 import javax.xml.bind.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Dto.AddProductInCartDto;
 import com.example.demo.Dto.OrderDto;
+import com.example.demo.Dto.PlaceOrderDto;
 import com.example.demo.Service.CartService;
 
 import lombok.RequiredArgsConstructor;
@@ -68,5 +71,27 @@ public class CartController {
 	 {
 		 
 		 return ResponseEntity.status(HttpStatus.CREATED).body(cartService.increaseOrderQuantity(addProductInCartDto));
+	 }
+	 
+	//Decrease quantity/ increase quantity
+	 @PostMapping("/decreaseQuantity")
+	 public ResponseEntity<OrderDto> decreaseProductQuantity(@RequestBody AddProductInCartDto addProductInCartDto)
+	 {
+		 
+		 return ResponseEntity.status(HttpStatus.CREATED).body(cartService.decreaseOrderQuantity(addProductInCartDto));
+	 }
+	 
+	 //place order
+	 @PostMapping("/place-order")
+	 public ResponseEntity<OrderDto> placeOrder(@RequestBody PlaceOrderDto placeOrderDto)
+	 {
+		 return ResponseEntity.status(HttpStatus.CREATED).body(cartService.placeOrderDto(placeOrderDto));
+	 }
+	 
+	 //get the order for the customer/ user
+	 @GetMapping("/myOrders/{userId}")
+	 public ResponseEntity<List<OrderDto>> getPlacedOrder(@PathVariable String userId)
+	 {
+		 return ResponseEntity.ok(cartService.getMyPlacedOrder(userId));
 	 }
 }
