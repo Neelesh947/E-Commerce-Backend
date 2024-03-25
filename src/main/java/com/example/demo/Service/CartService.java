@@ -14,4 +14,6 @@ public interface CartService {
 	public OrderDto getCartItemsByUserId(String userId);
 	
 	public OrderDto applyCoupon(String userId, String code) throws ValidationException;
+	
+	public OrderDto increaseOrderQuantity(AddProductInCartDto addProductInCartDto);
 }
