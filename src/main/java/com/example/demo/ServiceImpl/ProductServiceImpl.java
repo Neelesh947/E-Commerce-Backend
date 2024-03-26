@@ -69,4 +69,40 @@ public class ProductServiceImpl implements ProductService{
 		return false;
 	}
 	
+	//update the product by the admin
+	public ProductDto getProductById(String productId)
+	{
+		Optional<Product> optionalProduct=this.productRepository.findById(productId);
+		if(optionalProduct.isPresent())
+		{
+			return optionalProduct.get().getDto();
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public ProductDto updateTheProduct(String productId, ProductDto productDto) throws IOException
+	{
+		Optional<Product> optionalProduct=this.productRepository.findById(productId);
+		Optional<Category> optionalCategpory=this.categoryRepository.findById(productDto.getCategroyId());
+		if(optionalProduct.isPresent() && optionalCategpory.isPresent())
+		{
+			Product product=optionalProduct.get();
+			product.setName(productDto.getName());
+			product.setPrice(productDto.getPrice());
+			product.setDescription(productDto.getDescription());
+			product.setCategory(optionalCategpory.get());
+			if(productDto.getImg()!=null)
+			{
+				product.setImg(productDto.getImg().getBytes());
+			}
+			return productRepository.save(product).getDto();
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 }

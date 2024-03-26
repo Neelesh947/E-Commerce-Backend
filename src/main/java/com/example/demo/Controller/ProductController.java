@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -75,6 +76,31 @@ public class ProductController {
 	public ResponseEntity<FAQdto> postFAQ(@PathVariable String productId, @RequestBody FAQdto faQdto)
 	{
 		return ResponseEntity.status(HttpStatus.CREATED).body(faqService.postFAQ(productId, faQdto));
+	}
+	
+	//update the product
+	@GetMapping("/{productId}")
+	public ResponseEntity<ProductDto> getProductById(@PathVariable String productId)
+	{
+		ProductDto productDto=this.productService.getProductById(productId);
+		if(productDto!=null) {
+			return ResponseEntity.ok(productDto);
+		}
+		else {
+			return ResponseEntity.notFound().build();				
+		}	
+	}
+	
+	@PutMapping("/{productId}")
+	public ResponseEntity<ProductDto> updateProduct(@PathVariable String productId, @ModelAttribute ProductDto productDto) throws IOException
+	{
+		ProductDto updateProduct=this.productService.updateTheProduct(productId, productDto);
+		if(updateProduct!=null) {
+			return ResponseEntity.ok(productDto);
+		}
+		else {
+			return ResponseEntity.notFound().build();				
+		}
 	}
 	
 }
