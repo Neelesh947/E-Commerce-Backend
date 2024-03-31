@@ -9,11 +9,16 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Dto.ProductDetailsDto;
 import com.example.demo.Dto.ProductDto;
 import com.example.demo.Entity.Category;
+import com.example.demo.Entity.FAQ;
 import com.example.demo.Entity.Product;
+import com.example.demo.Entity.Review;
 import com.example.demo.Repository.CategoryRepository;
+import com.example.demo.Repository.FAQRepository;
 import com.example.demo.Repository.ProductRepository;
+import com.example.demo.Repository.ReviewRepository;
 import com.example.demo.Service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +32,12 @@ public class ProductServiceImpl implements ProductService{
 	
 	@Autowired
 	private CategoryRepository categoryRepository;
+	
+	@Autowired
+	private FAQRepository faqRepository;
+	
+	@Autowired
+	private ReviewRepository reviewRepository;
 	
 	public ProductDto addProduct(ProductDto productDto) throws IOException
 	{
@@ -103,6 +114,24 @@ public class ProductServiceImpl implements ProductService{
 		{
 			return null;
 		}
+	}
+	
+	public ProductDetailsDto getProductDetailById(String productId)
+	{
+		Optional<Product> optionalProduct=this.productRepository.findById(productId);
+		if(optionalProduct.isPresent())
+		{
+			List<FAQ> faqlist=this.faqRepository.findAllByProductProductId(productId);
+			List<Review> reviewList=this.reviewRepository.findAllByProductProductId(productId);
+			
+			ProductDetailsDto productDetailsDto=new  ProductDetailsDto();			
+			productDetailsDto.setProductDto(optionalProduct.get().getDto());
+			productDetailsDto.setFaQdtos(faqlist.stream().map(FAQ::getFaqDto).collect(Collectors.toList()));
+			productDetailsDto.setReviewDtos(reviewList.stream().map(Review::getDto).collect(Collectors.toList()));
+			
+			return productDetailsDto;
+		}
+		return null;
 	}
 	
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Dto.FAQdto;
+import com.example.demo.Dto.ProductDetailsDto;
 import com.example.demo.Dto.ProductDto;
 import com.example.demo.Service.FAQService;
 import com.example.demo.Service.ProductService;
@@ -103,4 +104,14 @@ public class ProductController {
 		}
 	}
 	
+	@GetMapping("/details/{productId}")
+	public ResponseEntity<ProductDetailsDto> getProductDetailsById(@PathVariable String productId)
+	{
+		ProductDetailsDto productDetailsDto=this.productService.getProductDetailById(productId);
+		if(productDetailsDto==null)
+		{
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(productDetailsDto);
+	}
 }

@@ -3,6 +3,7 @@ package com.example.demo.Service;
 import java.io.IOException;
 import java.util.List;
 
+import com.example.demo.Dto.ProductDetailsDto;
 import com.example.demo.Dto.ProductDto;
 
 public interface ProductService {
@@ -20,4 +21,6 @@ public interface ProductService {
 	public ProductDto getProductById(String productId);
 	
 	public ProductDto updateTheProduct(String productId, ProductDto productDto) throws IOException;
+	
+	public ProductDetailsDto getProductDetailById(String productId);
 }
