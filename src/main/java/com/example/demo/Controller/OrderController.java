@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Dto.AnalyticsResponseDto;
 import com.example.demo.Dto.OrderDto;
 import com.example.demo.Service.OrderService;
 
@@ -40,5 +41,11 @@ public class OrderController {
 			return new ResponseEntity<>("Something Went Wrong", HttpStatus.BAD_REQUEST);
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(orderDto);
+	}
+	
+	@GetMapping("/analytics")
+	public ResponseEntity<AnalyticsResponseDto> getAnalytics()
+	{
+		return ResponseEntity.ok(orderService.calculateAnalytics());
 	}
 }

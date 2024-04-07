@@ -1,5 +1,6 @@
 package com.example.demo.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,4 +21,8 @@ public interface OrderRepository extends JpaRepository<Order, String>{
 	List<Order> findByUserIdAndOrderStatusIn(String userId, List<OrderStatus> orderStatus);
 	
 	Optional<Order> findByTrackingId(UUID trackingId);
+	
+	List<Order> findByDateBetweenAndOrderStatus(Date startOfMonth, Date endOfMonth, OrderStatus status);
+	
+	Long countByOrderStatus(OrderStatus status);
 }
