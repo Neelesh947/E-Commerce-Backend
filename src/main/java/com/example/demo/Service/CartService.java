@@ -1,6 +1,7 @@
 package com.example.demo.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.bind.ValidationException;
 
@@ -25,4 +26,6 @@ public interface CartService {
 	public OrderDto placeOrderDto(PlaceOrderDto placeOrderDto);
 	
 	public List<OrderDto> getMyPlacedOrder(String userId);
+	
+	public OrderDto searchOrderByTrackingid(UUID trackingId);
 }

@@ -1,6 +1,8 @@
 package com.example.demo.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,4 +18,6 @@ public interface OrderRepository extends JpaRepository<Order, String>{
 	List<Order> findAllByOrderStatusIn(List<OrderStatus> getOrderStatus);
 	
 	List<Order> findByUserIdAndOrderStatusIn(String userId, List<OrderStatus> orderStatus);
+	
+	Optional<Order> findByTrackingId(UUID trackingId);
 }

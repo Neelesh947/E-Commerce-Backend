@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.bind.ValidationException;
 
@@ -93,5 +94,16 @@ public class CartController {
 	 public ResponseEntity<List<OrderDto>> getPlacedOrder(@PathVariable String userId)
 	 {
 		 return ResponseEntity.ok(cartService.getMyPlacedOrder(userId));
+	 }
+	 
+	 @GetMapping("/order/{trackingId}")
+	 public ResponseEntity<OrderDto> searchOrderByTrackingId(@PathVariable UUID trackingId)
+	 {
+		 OrderDto orderDto=this.cartService.searchOrderByTrackingid(trackingId);
+		 if(orderDto==null)
+		 {
+			 return ResponseEntity.notFound().build();
+		 }
+		 return ResponseEntity.status(HttpStatus.OK).body(orderDto);
 	 }
 }
